@@ -1,0 +1,111 @@
+{% load staticfiles %}
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<meta charset = "utf-8">
+		<title>Товары - Paporonik.ua</title>
+		<link rel = "stylesheet", type = "text/css", href = "{% static 'myapp/style.css' %}">
+	</head>
+	<body>
+		<div id="container">
+			<!-- Верхняя панель (заголовок) -->
+			<div id="header">
+				<div style = "float: left; width:100%">
+					<div style = "margin: 0 10%;">
+						<br><h1 id = "heed">Paporotnik.ua</h1><br>
+					</div>
+				</div>
+				<div id = "divLogo">
+					<a href = "{% url 'myapp.views.index' %}">
+						<img src = "{% static 'myapp/logo.jpg' %}", id = "logo", width = "125", height = "125"></a>
+				</div>
+				<div id = "trash" align = "center">
+					<a href = "{% url 'myapp.views.basket' %}">Корзина
+						{% if basket_items %}
+						<img align = "center", width = "70", height = "70", src = "{% static 'myapp/basket_full.png' %}">
+						{% else %}
+						<img align = "center", width = "70", height = "70", src = "{% static 'myapp/basket_empty.png' %}">
+						{% endif %}
+					</a>
+				</div>
+			</div>
+			<!-- Центр, основное содержимое -->
+			<div id="wrapper">
+				<div id="content">
+                    <p align = "center">
+					<form action = "/skirts/", method="GET">
+						<select class="inputStyleSorting", name="sorting", required>
+							<option value = "" disabled selected>Тип сортировки</option>
+							<option value="убывание цена">По убыванию (Цена)</option>
+							<option value="возрастание цена">По возрастанию (Цена)</option>
+							<option value="убывание название">По убыванию (Название)</option>
+							<option value="возрастание название">По возрастанию (Название)</option>
+						</select>
+						<button class = "sortBtns">Сортировать</button>
+					</form>
+                    <h1 align = "center">Юбки</h1>
+                    {% for item in items %}
+							<div class = "photoS">
+									<a href = "item/{{item.id}}">
+										<img src = "{{item.photo.url}}", width = "150", height = "150">
+									{{item.name}}
+									<div style = "display: block;", align = "center">
+										{% if item.is_available_now %}
+											<button class = "enabledMin">В наличии</button>
+										{% else %}
+											<button class = "disabledMin">Под заказ</button>
+										{% endif %}
+										<b>{{item.cost}} грн</b>
+									</div>
+									</a>
+								</div>
+						{% endfor %}
+				</div>
+			</div>
+			<!-- Меню слева (навигация) -->
+			<div id="navigation">
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.index' %}"><button class = "menuBtns">Главная</button></a>
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_preview' %}"><button class = "menuBtns">Товары</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_shirts' %}"><button class = "menuBtnsDetailed">Футболки</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_shoes' %}"><button class = "menuBtnsDetailed">Обувь</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_dress' %}"><button class = "menuBtnsDetailed">Платья</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_pants' %}"><button class = "menuBtnsDetailed">Штаны</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_skirts' %}"><button class = "menuBtnsDetailed">Юбки</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_heads' %}"><button class = "menuBtnsDetailed">Головные уборы</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_accessories' %}"><button class = "menuBtnsDetailed">Аксессуары</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_socks' %}"><button class = "menuBtnsDetailed">Носки</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_bags' %}"><button class = "menuBtnsDetailed">Рюкзаки и сумку</button></a>
+                <p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_others' %}"><button class = "menuBtnsDetailed">Другое</button></a>
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.contacts' %}"><button class = "menuBtns">Контакты</button></a>
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<button class = "menuBtns">Доставка и оплата</button>
+			</div>
+			<!-- Доп. информация справа, возможно реклама -->
+			<div id="extra" width = "200">
+				<p>
+				<h3 align = "center">Специальные предложения</h3>
+				<p align = "center">
+				<img height = "300", width = "200">
+			</div>
+			<!-- Футер, нижняя часть -->
+			<div id="footer">
+				<br><h3 align = "center">Paporotnik.ua</h3><br>
+			</div>
+		</div>
+	</body>
+</html>

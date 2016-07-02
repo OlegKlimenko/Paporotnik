@@ -1,0 +1,138 @@
+{% load staticfiles %}
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset = "utf-8">
+		<title>Корзина - Paporotnik.ua</title>
+		<link rel = "stylesheet", type = "text/css", href = "{% static 'myapp/style.css' %}">
+	</head> 
+	<body>
+		<div id="container">
+			<!-- Верхняя панель (заголовок) -->
+			<div id="header">
+				<div style = "float: left; width:100%">
+					<div style = "margin: 0 10%;">
+						<br><h1 id = "heed">Paporotnik.ua</h1><br>
+					</div>
+				</div>
+				<div id = "divLogo">
+					<a href = "{% url 'myapp.views.index' %}">
+						<img src = "{% static 'myapp/logo.jpg' %}", id = "logo", width = "125", height = "125"></a>
+				</div>
+				<div id = "trash" align = "center">
+					<a href = "{% url 'myapp.views.basket' %}">Корзина
+						{% if basket_items %}
+						<img align = "center", width = "70", height = "70", src = "{% static 'myapp/basket_full.png' %}">
+						{% else %}
+						<img align = "center", width = "70", height = "70", src = "{% static 'myapp/basket_empty.png' %}">
+						{% endif %}
+					</a>
+				</div>
+			</div>
+			<!-- Центр, основное содержимое -->
+			<div id="wrapper">
+				<div id="content">
+					<h1 align = "center", style = "color: #44B03A">Корзина</h1>
+						{% for item in item_list %}
+							<div class = "basketItem">
+								<img src = "{{item.0.photo.url}}", width = "150", height = "150">
+								<div class = "basketDefinition">
+									<h2>{{item.0.name}}</h2>
+									<p>
+									Цвет: {{item.0.color}}
+									<p>
+									<h2 style = "color: #00FF00;">{{item.0.cost}} грн</h2>
+								</div>
+								<div class = "basketCounting">
+									<form action = "/basket/", method = "POST">
+									{% csrf_token %}
+										<input type = "hidden", name = "id_item_minus" value = "{{item.0.id}}">
+										<button class = "btnMinus", type = "submit", align = "right">-</button>
+									</form>
+								</div>
+								<div class = "basketCounting">
+									<input class = "cartNumber", readonly = "readonly" value = "{{item.2}}">
+								</div>
+								<div class = "basketCounting">
+									<form action = "/basket/", method = "POST">
+									{% csrf_token %}
+										<input type = "hidden", name = "id_item_plus" value = "{{item.0.id}}">
+										<button class = "btnPlus", type = "submit">+</button>
+									</form>
+								</div>
+								<div class = "basketDelDiv">
+									<form action = "/basket/", method = "POST">
+									{% csrf_token %}
+										<input type = "hidden", name = "id_item_del", value = "{{item.0.id}}">
+										<button class = "basketDelButton", type = "submit">X</button>
+									</form>
+								</div>
+							</div>
+						{% endfor %}
+					{% if basket_items %}
+					<div id = "totalCost">
+						<h3>Итого:<h3><h1>{{summary_cost}} грн</h1>
+					</div>
+					<div id = "ord">
+						<form action = "/thanks/", method = "POST">
+						{% csrf_token %}
+							<h1 align = "center">Заказ</h1>
+							<h3>Имя</h3>
+							<input class = "inputStyle", type = "text", size = "40", name = "f_name", required>
+							<h3>Фамилия</h3>
+							<input class = "inputStyle", type = "text", size = "40", name = "l_name", required>
+							<h3>Отчество</h3>
+							<input class = "inputStyle", type = "text", size = "40", name = "m_name", required>
+							<h3>Телефон</h3>
+							<input class = "inputStyle", type = "text", size = "40", name = "phone", required>
+							<h3>Город</h3>
+							<select class = "inputStyleCity", name = "city", required>
+								{% for item in cities %}
+									<option value="{{item.name_city}}">{{item.name_city}}</option>
+								{% endfor %}
+							</select>
+							<!--<input class = "inputStyle", type = "text", size = "40", name = "city", required>-->
+							<h3>Адрес доставки</h3>
+							<input class = "inputStyle", type = "text", size = "40", name = "address", required>
+							<p align = "right">
+							<input type = "hidden", name = "totalCost", value = "{{summary_cost}}">
+							<button id = "orderBtn">Оформить заказ</button>
+						</form>
+					</div>
+					{% else %}
+					<h2 align = "center">Корзина пуста.</h2>
+					{% endif %}
+				</div>
+			</div>
+			<!-- Меню слева (навигация) -->
+			<div id="navigation">
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.index' %}"><button class = "menuBtns">Главная</button></a>
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.goods_preview' %}"><button class = "menuBtns">Товары</button></a>
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.contacts' %}"><button class = "menuBtns">Контакты</button></a>
+				<p style = "margin-top: 0.5em; margin-bottom: 0.5em;">
+					<a href = "{% url 'myapp.views.delivery' %}"><button class = "menuBtns">Доставка и оплата</button></a>
+			</div>
+			<!-- Доп. информация справа, возможно реклама -->
+			<div id="extra" width = "200">
+				<p>
+				<h3 align = "center">Специальные предложения</h3>
+				<p align = "center">
+				<img height = "300", width = "200">
+			</div>
+			<!-- Футер, нижняя часть -->
+			{% if basket_items|length > 0 %}
+			<div id="footer">
+				<br><h3 align = "center">Paporotnik.ua</h3><br>
+			</div>
+			{% else %}
+			<div id="footer", style = "position: absolute; bottom: 0;">
+				<br><h3 align = "center">Paporotnik.ua</h3><br>
+			</div>
+			{% endif %}
+		</div>
+	</body>
+</html>
